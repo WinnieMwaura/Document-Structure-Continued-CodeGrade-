@@ -1,52 +1,81 @@
-💖 Runway Codex
+# 💖 Runway Codex
 
-Runway Codex is a fashion-inspired Single Page Application (SPA) that combines a dictionary API with a custom fashion style engine. Users can search for words or fashion styles and receive definitions, style vibes, and dynamically changing UI themes based on their input.
+## 📌 Project Overview
 
-✨ Features
-🔎 Search for words or fashion styles
-📖 Get definitions, parts of speech, and example usage
-🎨 Dynamic UI theme changes based on fashion styles
-💅 Custom fashion dataset (Y2K, chic, grunge, etc.)
-❌ Error handling for invalid or missing words
-⚡ Smooth single-page experience (no page reloads)
-🎯 Supported Fashion Styles
+Runway Codex is a **fashion search engine web application** that allows users to explore different fashion styles such as *Y2K, grunge, chic, and streetwear*.
 
-Runway Codex responds to the following styles:
+Users can search for a style and instantly get:
 
-y2k, chic, casual, retro, streetwear, bohemian, elegant, artsy, romantic, minimal, professional, girly, edgy, grunge, sporty, preppy, sexy
+* ✨ Style vibe description
+* 👗 Outfit ideas
+* 🛍️ Key clothing items
+* 📸 Visual inspiration (real images from API)
 
-Each style changes the background color and displays a unique fashion “vibe”.
+---
 
-🌐 Public API Used
+## 🚀 Features
 
-This project uses the Free Dictionary API:
+* 🔍 Search for fashion styles
+* 🎨 Dynamic background styling based on the selected aesthetic
+* 👗 Outfit recommendations for each style
+* 🛍️ Suggested clothing items
+* 📸 Real-time fashion images using the Unsplash API
+* ⚡ Fast and responsive user interface
 
-👉 https://dictionaryapi.dev/
+---
 
-It provides:
+## 🛠️ Technologies Used
 
-Word definitions
-Parts of speech
-Example usage
-Pronunciation data (where available)
-🧠 How It Works
-User enters a word or fashion style
-The app sends a request to the dictionary API using fetch()
-The response is processed and displayed dynamically
-If the word matches a fashion style in the custom dataset:
-A style vibe is shown
-The background color changes
-If no result is found, a friendly error message is displayed
-🛠️ Technologies Used
-HTML5
-CSS3
-JavaScript (ES6)
-Fetch API
-DOM Manipulation
-📁 Project Structure
-runway-codex/
-│
-├── index.html
-├── style.css
-├── script.js
-└── README.md
+* HTML5
+* CSS3
+* JavaScript 
+* Unsplash API
+
+---
+
+## 🌐 How It Works
+
+1. User enters a fashion style (e.g. *grunge*)
+2. The app:
+
+   * Checks a local fashion dataset
+   * Fetches related images from the Unsplash API
+3. Results are displayed dynamically on the page
+
+
+
+## 📂 Project Structure
+
+* `index.html` → Main structure
+* `style.css` → Styling and layout
+* `script.js` → Logic, API calls, and rendering
+
+
+
+## ⚙️ Setup Instructions
+
+1. Clone or download the project
+
+2. Open the project folder
+
+3. Get a free API key from Unsplash: https://unsplash.com/developers
+
+4. Open `script.js` and replace:
+
+   ```js
+   const UNSPLASH_KEY = "PASTE_YOUR_ACCESS_KEY_HERE";
+   
+
+   with your actual key
+
+5. Open `index.html` in your browser
+
+
+
+## ⚠️ Limitations
+
+* Only predefined styles (e.g. y2k, grunge, chic, streetwear) include detailed outfit data
+* Requires internet connection for image fetching
+* Limited dataset (can be expanded further)
+
+
