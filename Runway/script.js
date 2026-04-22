@@ -2,99 +2,121 @@ const form = document.getElementById("searchForm");
 const input = document.getElementById("wordInput");
 const resultDiv = document.getElementById("result");
 
-// 💅 Fashion dataset (17 styles)
+const UNSPLASH_KEY = "HoVN7sGKMotEKOf_S1lAPTbHCakp_pxecZT1N8s98yA";
+
+// 💅 Expanded Fashion Dataset
 const fashionData = {
-  y2k: { vibe: "Playful, nostalgic 2000s", color: "#ffb6c1" },
-  chic: { vibe: "Stylish, polished", color: "#f8c8dc" },
-  casual: { vibe: "Relaxed, everyday comfort", color: "#d3f8e2" },
-  retro: { vibe: "Vintage throwback", color: "#f6bd60" },
-  streetwear: { vibe: "Urban, bold", color: "#333333" },
-  bohemian: { vibe: "Free-spirited, earthy", color: "#cdb4db" },
-  elegant: { vibe: "Sophisticated, refined", color: "#eae2b7" },
-  artsy: { vibe: "Creative, expressive", color: "#ffafcc" },
-  romantic: { vibe: "Soft, dreamy", color: "#ffc8dd" },
-  minimal: { vibe: "Clean, simple", color: "#f1f1f1" },
-  professional: { vibe: "Formal, structured", color: "#ccd5ae" },
-  girly: { vibe: "Cute, feminine", color: "#ff69b4" },
-  edgy: { vibe: "Bold, rebellious", color: "#2b2d42" },
-  grunge: { vibe: "Dark, rugged", color: "#6c757d" },
-  sporty: { vibe: "Active, energetic", color: "#90dbf4" },
-  preppy: { vibe: "Classic, neat", color: "#bde0fe" },
-  sexy: { vibe: "Confident, bold", color: "#ff006e" }
+  y2k: {
+    vibe: "Playful, nostalgic 2000s",
+    color: "#ffb6c1",
+    outfits: [
+      "Baby tee + low-rise jeans",
+      "Mini skirt + crop top",
+      "Tracksuit + chunky sneakers"
+    ],
+    items: ["Crop tops", "Mini skirts", "Platform shoes", "Tiny handbags"]
+  },
+  grunge: {
+    vibe: "Dark, rebellious, 90s inspired",
+    color: "#6c757d",
+    outfits: [
+      "Flannel shirt + ripped jeans",
+      "Band tee + combat boots",
+      "Oversized sweater + docs"
+    ],
+    items: ["Flannel", "Ripped jeans", "Combat boots", "Band tees"]
+  },
+  chic: {
+    vibe: "Polished and stylish",
+    color: "#f8c8dc",
+    outfits: [
+      "Blazer + tailored pants",
+      "Midi dress + heels",
+      "Silk blouse + skirt"
+    ],
+    items: ["Blazers", "Heels", "Structured bags"]
+  },
+  streetwear: {
+    vibe: "Urban, bold, expressive",
+    color: "#333333",
+    outfits: [
+      "Hoodie + cargo pants",
+      "Graphic tee + sneakers",
+      "Oversized fit + cap"
+    ],
+    items: ["Hoodies", "Sneakers", "Caps", "Cargo pants"]
+  }
 };
 
 // 🎯 Event listener
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   const word = input.value.toLowerCase().trim();
-  fetchWord(word);
+  searchFashion(word);
 });
 
-// 🌐 Fetch API
-function fetchWord(word) {
-  resultDiv.innerHTML = "Loading... ⏳";
+// 🔍 Main search function
+function searchFashion(word) {
+  resultDiv.innerHTML = "Loading fashion results... ⏳";
 
-  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Not found");
-      return res.json();
+  const localData = fashionData[word];
+
+  // Fetch images from Unsplash
+  fetch(`https://api.unsplash.com/search/photos?query=${word}+fashion&per_page=6&client_id=${UNSPLASH_KEY}`)
+    .then(res => res.json())
+    .then(data => {
+      displayResults(word, localData, data.results);
     })
-    .then(data => displayData(data[0], word))
-    .catch(() => displayError(word));
+    .catch(() => {
+      displayResults(word, localData, []);
+    });
 }
 
-// 📊 Display results
-function displayData(data, word) {
-  const definition = data.meanings[0].definitions[0].definition;
-  const example = data.meanings[0].definitions[0].example || "No example available";
-  const partOfSpeech = data.meanings[0].partOfSpeech;
+// 🎨 Display results
+function displayResults(word, localData, images) {
+  let html = `<h2>💖 ${word}</h2>`;
 
-  let html = `
-    <h2>💖 ${word}</h2>
-    <p><strong>✨ Part of Speech:</strong> ${partOfSpeech}</p>
-    <p><strong>📖 Definition:</strong> ${definition}</p>
-    <p><strong>📝 Example:</strong> ${example}</p>
-  `;
-
-  applyFashionStyle(word, html);
-}
-
-// 🎨 Apply fashion styling + dataset
-function applyFashionStyle(word, html) {
-  if (fashionData[word]) {
-    const style = fashionData[word];
-
-    html += `
-      <h3>✨ Style Vibe</h3>
-      <p>${style.vibe}</p>
+  if (!localData && images.length === 0) {
+    resultDiv.innerHTML = `
+      <p>❌ No fashion results found.</p>
+      <p>Try: y2k, grunge, chic, streetwear</p>
     `;
-
-    document.body.style.background = style.color;
-
-    // Adjust text color for dark themes
-    if (["edgy", "grunge", "streetwear"].includes(word)) {
-      document.body.style.color = "white";
-    } else {
-      document.body.style.color = "#333";
-    }
+    return;
   }
 
-  resultDiv.innerHTML = html;
-}
-
-// ❌ Error handling
-function displayError(word) {
-  let html = `<p>❌ Word not found in dictionary.</p>`;
-
-  if (fashionData[word]) {
-    const style = fashionData[word];
+  // 🌈 Apply background if style exists
+  if (localData) {
+    document.body.style.background = localData.color;
+    document.body.style.color =
+      ["grunge", "streetwear"].includes(word) ? "white" : "#333";
 
     html += `
       <h3>✨ Style Vibe</h3>
-      <p>${style.vibe}</p>
-    `;
+      <p>${localData.vibe}</p>
 
-    document.body.style.background = style.color;
+      <h3>👗 Outfit Ideas</h3>
+      <ul>
+        ${localData.outfits.map(o => `<li>${o}</li>`).join("")}
+      </ul>
+
+      <h3>🛍️ Key Items</h3>
+      <ul>
+        ${localData.items.map(i => `<li>${i}</li>`).join("")}
+      </ul>
+    `;
+  }
+
+  // 🖼️ Images section
+  if (images.length > 0) {
+    html += `<h3>📸 Style Inspiration</h3><div class="image-grid">`;
+
+    images.forEach(img => {
+      html += `
+        <img src="${img.urls.small}" alt="fashion image" class="fashion-img">
+      `;
+    });
+
+    html += `</div>`;
   }
 
   resultDiv.innerHTML = html;
